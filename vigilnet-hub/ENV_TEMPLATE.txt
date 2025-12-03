@@ -1,0 +1,75 @@
+# ============================================
+# VigilNet Hub - Environment Variables Template
+# ============================================
+# Copy this content to .env.local file in the root directory
+# For production (Vercel), add these in your Vercel dashboard under Settings > Environment Variables
+
+# ============================================
+# API Keys
+# ============================================
+
+# CoinMarketCap API Key (Required for tokens, prices, and airdrops)
+# Get your free API key at: https://coinmarketcap.com/api/
+# Free tier: 333 requests/day, 10,000 credits/month
+COINMARKETCAP_API_KEY=""
+
+# Coinbase API Key (Optional - Currently not used, kept for future use)
+# Get your API key at: https://www.coinbase.com/developers
+COINBASE_API_KEY=
+
+# ============================================
+# Base URL Configuration
+# ============================================
+
+# Base URL for API calls (auto-detected on Vercel)
+# Only set this if you need to override the default
+# For local development, leave as localhost:3000
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
+
+# VERCEL_URL is automatically set by Vercel - don't set this manually
+# VERCEL_URL=
+
+# ============================================
+# Ad Network Configuration
+# ============================================
+# Choose ONE ad network: 'google', 'coinzilla', 'media.net', 'propeller', or 'custom'
+# See AD_SETUP.md for detailed setup instructions
+
+NEXT_PUBLIC_AD_NETWORK=google
+
+# ============================================
+# Google AdSense (if NEXT_PUBLIC_AD_NETWORK=google)
+# ============================================
+# Sign up at: https://www.google.com/adsense/
+# Get your Publisher ID (format: ca-pub-XXXXXXXXXX)
+# Create ad units in AdSense dashboard to get Slot IDs
+
+NEXT_PUBLIC_GOOGLE_ADSENSE_CLIENT_ID=ca-pub-XXXXXXXXXX
+NEXT_PUBLIC_GOOGLE_ADSENSE_SLOT_TOP=1234567890
+NEXT_PUBLIC_GOOGLE_ADSENSE_SLOT_SIDEBAR=0987654321
+NEXT_PUBLIC_GOOGLE_ADSENSE_SLOT_BOTTOM=1122334455
+
+# ============================================
+# Custom Ad Codes (for Coinzilla, Media.net, PropellerAds, A-ADS, etc.)
+# ============================================
+# Use these if NEXT_PUBLIC_AD_NETWORK is set to 'coinzilla', 'media.net', 'propeller', or 'custom'
+# Paste the full HTML/JavaScript ad code from your ad network
+
+# Top Banner Ad Code
+NEXT_PUBLIC_CUSTOM_AD_CODE_TOP=
+
+# Sidebar Ad Code (vertical format recommended: 300x600)
+NEXT_PUBLIC_CUSTOM_AD_CODE_SIDEBAR=
+
+# Bottom Banner Ad Code
+NEXT_PUBLIC_CUSTOM_AD_CODE_BOTTOM=
+
+# ============================================
+# Development Notes
+# ============================================
+# - All NEXT_PUBLIC_* variables are exposed to the browser
+# - Never commit .env.local to git (it's in .gitignore)
+# - For Vercel deployment, add these in Vercel dashboard
+# - CoinMarketCap API key has a default fallback, but you should use your own
+# - Ad networks may not work in localhost - test in production
+
