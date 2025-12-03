@@ -3,73 +3,83 @@ import AirdropCard from '@/components/AirdropCard'
 import TokenSlider from '@/components/TokenSlider'
 import AdSlot from '@/components/AdSlot'
 import { NewsItem, Token, Airdrop } from '@/lib/types'
+import { fetchMultipleRSSFeeds } from '@/lib/rss'
+import { fetchCMCTopTokens } from '@/lib/cmc'
+import { fetchCMCAirdrops } from '@/lib/cmc'
 
-const getBaseUrl = () => {
-  if (typeof window !== 'undefined') return ''
-  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`
-  return process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
-}
+// AI News RSS feeds
+const AI_FEEDS = [
+  { url: 'https://venturebeat.com/feed/', source: 'VentureBeat' },
+  { url: 'https://thenextweb.com/feed', source: 'The Next Web' },
+]
 
-async function getNews() {
+// Crypto News RSS feeds
+const CRYPTO_FEEDS = [
+  { url: 'https://coinmarketcap.com/headlines/news/rss/', source: 'CoinMarketCap' },
+  { url: 'https://coindesk.com/arc/outboundfeeds/rss/', source: 'CoinDesk' },
+  { url: 'https://cointelegraph.com/rss', source: 'CoinTelegraph' },
+  { url: 'https://decrypt.co/feed', source: 'Decrypt' },
+]
+
+async function getNews(): Promise<NewsItem[]> {
   try {
-    const baseUrl = getBaseUrl()
-    const res = await fetch(`${baseUrl}/api/news`, {
-      next: { revalidate: 300 },
-    })
-    const data = await res.json()
-    return data.data || []
+    console.log('Fetching crypto news from RSS feeds...')
+    const newsItems = await fetchMultipleRSSFeeds(CRYPTO_FEEDS)
+    console.log(`Successfully fetched ${newsItems.length} news items`)
+    return newsItems
   } catch (error) {
+    console.error('Error fetching news:', error)
     return []
   }
 }
 
-async function getTokens() {
+async function getTokens(): Promise<Token[]> {
   try {
-    const baseUrl = getBaseUrl()
-    const res = await fetch(`${baseUrl}/api/tokens`, {
-      next: { revalidate: 300 },
-    })
-    const data = await res.json()
-    return data.data || []
+    console.log('Fetching tokens from CoinMarketCap...')
+    const tokens = await fetchCMCTopTokens(200)
+    console.log(`Successfully fetched ${tokens.length} tokens`)
+    return tokens
   } catch (error) {
+    console.error('Error fetching tokens:', error)
     return []
   }
 }
 
-
-async function getAINews() {
+async function getAINews(): Promise<NewsItem[]> {
   try {
-    const baseUrl = getBaseUrl()
-    const res = await fetch(`${baseUrl}/api/ai`, {
-      next: { revalidate: 300 },
-    })
-    const data = await res.json()
-    return data.data || []
+    console.log('Fetching AI news from RSS feeds...')
+    const newsItems = await fetchMultipleRSSFeeds(AI_FEEDS)
+    console.log(`Successfully fetched ${newsItems.length} AI news items`)
+    return newsItems
   } catch (error) {
+    console.error('Error fetching AI news:', error)
     return []
   }
 }
 
-async function getAirdrops() {
+async function getAirdrops(): Promise<Airdrop[]> {
   try {
-    const baseUrl = getBaseUrl()
-    const res = await fetch(`${baseUrl}/api/airdrops?limit=12`, {
-      next: { revalidate: 300 },
-    })
-    const data = await res.json()
-    return data.data || []
+    console.log('Fetching airdrops from CoinMarketCap...')
+    const airdrops = await fetchCMCAirdrops(12)
+    console.log(`Successfully fetched ${airdrops.length} airdrops`)
+    return airdrops
   } catch (error) {
+    console.error('Error fetching airdrops:', error)
     return []
   }
 }
 
 export default async function HomePage() {
+  console.log('HomePage: Starting data fetch...')
+  
   const [news, tokens, aiNews, airdrops] = await Promise.all([
     getNews(),
     getTokens(),
     getAINews(),
     getAirdrops(),
   ])
+  
+  console.log(`HomePage: Data fetch complete - News: ${news.length}, Tokens: ${tokens.length}, AI News: ${aiNews.length}, Airdrops: ${airdrops.length}`)
 
   return (
     <div className="min-h-screen bg-gray-900">
@@ -135,11 +145,18 @@ export default async function HomePage() {
                   View All ({news.length}) →
                 </a>
               </div>
-              <div className="grid grid-cols-1 gap-4">
-                {news.slice(0, 6).map((item: NewsItem) => (
-                  <NewsCard key={item.id} news={item} />
-                ))}
-              </div>
+              {news.length === 0 ? (
+                <div className="bg-yellow-900/20 border border-yellow-700 rounded-lg p-6 text-center">
+                  <p className="text-yellow-400 mb-2">No news available at the moment</p>
+                  <p className="text-yellow-500 text-sm">RSS feeds may be temporarily unavailable. Please check back later.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 gap-4">
+                  {news.slice(0, 6).map((item: NewsItem) => (
+                    <NewsCard key={item.id} news={item} />
+                  ))}
+                </div>
+              )}
             </section>
 
             {/* Live Airdrops */}
