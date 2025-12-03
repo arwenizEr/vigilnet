@@ -1,0 +1,57 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Note: For local development without DATABASE_URL, Prisma will fail to generate.
+// Either set DATABASE_URL or comment out the models that use Prisma.
+// The app works without a database - caching is optional.
+
+model NewsCache {
+  id        String   @id @default(cuid())
+  source    String
+  title     String
+  link      String   @unique
+  pubDate   DateTime
+  content   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([pubDate])
+  @@index([source])
+}
+
+model TokenCache {
+  id        String   @id @default(cuid())
+  coinId    String   @unique
+  name      String
+  symbol    String
+  price     Float
+  priceChange24h Float
+  marketCap Float?
+  image     String?
+  rank      Int?
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@index([rank])
+}
+
+model AirdropCache {
+  id        String   @id @default(cuid())
+  title     String
+  link      String   @unique
+  reward    String?
+  category  String?
+  status    String?
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@index([status])
+}
+

@@ -1,0 +1,23 @@
+/* Ad container styles */
+.ad-container {
+  min-height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 0.5rem;
+}
+
+.ad-container-top {
+  min-height: 100px;
+}
+
+.ad-container-sidebar {
+  min-height: 600px;
+}
+
+.ad-container-bottom {
+  min-height: 100px;
+}
+
