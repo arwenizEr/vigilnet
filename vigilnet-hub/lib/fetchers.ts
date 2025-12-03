@@ -65,59 +65,8 @@ export async function fetchTokenPrices(coinIds: string[]): Promise<PriceUpdate[]
 }
 
 export async function fetchTestnets(): Promise<Testnet[]> {
-  try {
-    // Try fetching from ChainList's GitHub raw data
-    // We'll fetch a few known testnet chain files
-    const testnetChainIds = [
-      11155111, // Sepolia
-      80001,    // Mumbai (Polygon)
-      97,       // BSC Testnet
-      43113,    // Avalanche Fuji
-      4002,     // Fantom Testnet
-      421613,   // Arbitrum Goerli
-      84531,    // Base Goerli
-      280,      // zkSync Era Testnet
-    ]
-
-    const chains: any[] = []
-    
-    // Try to fetch a few chains from GitHub
-    for (const chainId of testnetChainIds.slice(0, 3)) {
-      try {
-        const response = await axios.get(
-          `https://raw.githubusercontent.com/ethereum-lists/chains/master/_data/chains/eip155-${chainId}.json`,
-          { timeout: 5000 }
-        )
-        if (response.data) {
-          chains.push(response.data)
-        }
-      } catch (err) {
-        // Continue with other chains
-      }
-    }
-
-    // If we got some chains, use them, otherwise use fallback
-    if (chains.length > 0) {
-      return chains
-        .filter((chain: any) => chain.testnet === true)
-        .map((chain: any) => ({
-          id: `testnet-${chain.chainId}`,
-          name: chain.name,
-          chainId: chain.chainId,
-          rpc: chain.rpc || [],
-          explorers: chain.explorers?.map((exp: any) => exp.url) || [],
-          testnet: true,
-          nativeCurrency: chain.nativeCurrency,
-        }))
-    }
-
-    // Fallback to known testnets
-    return getKnownTestnets()
-  } catch (error) {
-    console.error('Error fetching testnets:', error)
-    // Return known testnets as fallback
-    return getKnownTestnets()
-  }
+  // Return known testnets directly - reliable and always available
+  return getKnownTestnets()
 }
 
 function getKnownTestnets(): Testnet[] {
@@ -127,16 +76,24 @@ function getKnownTestnets(): Testnet[] {
       id: 'testnet-11155111',
       name: 'Sepolia',
       chainId: 11155111,
-      rpc: ['https://rpc.sepolia.org', 'https://sepolia.infura.io/v3/YOUR-PROJECT-ID'],
+      rpc: [
+        'https://rpc.sepolia.org',
+        'https://sepolia.infura.io/v3/YOUR-PROJECT-ID',
+        'https://ethereum-sepolia-rpc.publicnode.com',
+      ],
       explorers: ['https://sepolia.etherscan.io'],
       testnet: true,
       nativeCurrency: { name: 'Sepolia Ether', symbol: 'ETH', decimals: 18 },
     },
     {
       id: 'testnet-80001',
-      name: 'Mumbai',
+      name: 'Mumbai (Polygon)',
       chainId: 80001,
-      rpc: ['https://matic-mumbai.chainstacklabs.com', 'https://rpc-mumbai.maticvigil.com'],
+      rpc: [
+        'https://matic-mumbai.chainstacklabs.com',
+        'https://rpc-mumbai.maticvigil.com',
+        'https://polygon-mumbai-bor.publicnode.com',
+      ],
       explorers: ['https://mumbai.polygonscan.com'],
       testnet: true,
       nativeCurrency: { name: 'MATIC', symbol: 'MATIC', decimals: 18 },
@@ -145,7 +102,10 @@ function getKnownTestnets(): Testnet[] {
       id: 'testnet-97',
       name: 'BSC Testnet',
       chainId: 97,
-      rpc: ['https://data-seed-prebsc-1-s1.binance.org:8545'],
+      rpc: [
+        'https://data-seed-prebsc-1-s1.binance.org:8545',
+        'https://bsc-testnet-rpc.publicnode.com',
+      ],
       explorers: ['https://testnet.bscscan.com'],
       testnet: true,
       nativeCurrency: { name: 'BNB', symbol: 'BNB', decimals: 18 },
@@ -154,7 +114,10 @@ function getKnownTestnets(): Testnet[] {
       id: 'testnet-43113',
       name: 'Avalanche Fuji',
       chainId: 43113,
-      rpc: ['https://api.avax-test.network/ext/bc/C/rpc'],
+      rpc: [
+        'https://api.avax-test.network/ext/bc/C/rpc',
+        'https://avalanche-fuji-c-chain-rpc.publicnode.com',
+      ],
       explorers: ['https://testnet.snowtrace.io'],
       testnet: true,
       nativeCurrency: { name: 'AVAX', symbol: 'AVAX', decimals: 18 },
@@ -163,7 +126,10 @@ function getKnownTestnets(): Testnet[] {
       id: 'testnet-421613',
       name: 'Arbitrum Goerli',
       chainId: 421613,
-      rpc: ['https://goerli-rollup.arbitrum.io/rpc'],
+      rpc: [
+        'https://goerli-rollup.arbitrum.io/rpc',
+        'https://arbitrum-goerli-rpc.publicnode.com',
+      ],
       explorers: ['https://goerli.arbiscan.io'],
       testnet: true,
       nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
@@ -172,7 +138,10 @@ function getKnownTestnets(): Testnet[] {
       id: 'testnet-84531',
       name: 'Base Goerli',
       chainId: 84531,
-      rpc: ['https://goerli.base.org'],
+      rpc: [
+        'https://goerli.base.org',
+        'https://base-goerli-rpc.publicnode.com',
+      ],
       explorers: ['https://goerli.basescan.org'],
       testnet: true,
       nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
@@ -181,7 +150,10 @@ function getKnownTestnets(): Testnet[] {
       id: 'testnet-4002',
       name: 'Fantom Testnet',
       chainId: 4002,
-      rpc: ['https://rpc.testnet.fantom.network'],
+      rpc: [
+        'https://rpc.testnet.fantom.network',
+        'https://fantom-testnet-rpc.publicnode.com',
+      ],
       explorers: ['https://testnet.ftmscan.com'],
       testnet: true,
       nativeCurrency: { name: 'Fantom', symbol: 'FTM', decimals: 18 },
@@ -192,6 +164,24 @@ function getKnownTestnets(): Testnet[] {
       chainId: 280,
       rpc: ['https://testnet.era.zksync.dev'],
       explorers: ['https://goerli.explorer.zksync.io'],
+      testnet: true,
+      nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+    },
+    {
+      id: 'testnet-1442',
+      name: 'Polygon zkEVM Testnet',
+      chainId: 1442,
+      rpc: ['https://rpc.public.zkevm-test.net'],
+      explorers: ['https://testnet-zkevm.polygonscan.com'],
+      testnet: true,
+      nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+    },
+    {
+      id: 'testnet-534353',
+      name: 'Scroll Testnet',
+      chainId: 534353,
+      rpc: ['https://alpha-rpc.scroll.io/l2'],
+      explorers: ['https://blockscout.scroll.io'],
       testnet: true,
       nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
     },

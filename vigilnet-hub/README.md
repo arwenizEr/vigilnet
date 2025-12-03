@@ -62,9 +62,24 @@ npm run dev
 
 ## Deployment to Vercel
 
-### Quick Deploy
+### Method 1: Via Vercel UI (Recommended for First Time)
 
-1. **Install Vercel CLI** (if not already installed):
+**See detailed guide**: [DEPLOY_VERCEL_UI.md](./DEPLOY_VERCEL_UI.md)
+
+**Quick Steps**:
+1. Push code to GitHub
+2. Go to [vercel.com](https://vercel.com) and sign in
+3. Click "Add New Project"
+4. Import your GitHub repository
+5. Configure settings (auto-detected for Next.js)
+6. Add environment variables (optional):
+   - `DATABASE_URL` - PostgreSQL connection (optional)
+   - `COINMARKETCAP_API_KEY` - CoinMarketCap API key (optional)
+7. Click "Deploy"
+
+### Method 2: Via Vercel CLI
+
+1. **Install Vercel CLI**:
 ```bash
 npm i -g vercel
 ```
@@ -77,12 +92,11 @@ vercel
 
 3. **Set Environment Variables** in Vercel Dashboard:
    - Go to your project → Settings → Environment Variables
-   - Add `DATABASE_URL` with your PostgreSQL connection string
-   - If using Vercel Postgres, use `POSTGRES_PRISMA_URL` instead
+   - Add `DATABASE_URL` with your PostgreSQL connection string (optional)
+   - Add `COINMARKETCAP_API_KEY` for better API limits (optional)
 
-4. **Run Migrations**:
+4. **Run Migrations** (only if using database):
 ```bash
-# After deployment, run migrations
 npx prisma migrate deploy
 ```
 

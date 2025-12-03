@@ -116,6 +116,14 @@ const nextConfig = {
         protocol: 'https',
         hostname: '**.substack.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'cdn.sanity.io',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.sanity.io',
+      },
     ],
   },
 }

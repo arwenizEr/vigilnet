@@ -129,12 +129,20 @@ export default async function HomePage() {
           <section>
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-white">Trending Tokens</h2>
-              <a
-                href="/tokens"
-                className="text-blue-400 hover:text-blue-300 text-sm font-medium"
-              >
-                View All ({tokens.length}) →
-              </a>
+              <div className="flex items-center space-x-4">
+                <a
+                  href="/prices"
+                  className="text-blue-400 hover:text-blue-300 text-sm font-medium"
+                >
+                  View All Prices →
+                </a>
+                <a
+                  href="/tokens"
+                  className="text-gray-400 hover:text-gray-300 text-sm font-medium"
+                >
+                  Trending ({tokens.length})
+                </a>
+              </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {tokens.slice(0, 6).map((token: Token) => (

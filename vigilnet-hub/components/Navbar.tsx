@@ -33,6 +33,12 @@ export default function Navbar() {
               Tokens
             </Link>
             <Link
+              href="/prices"
+              className="text-gray-300 hover:text-white transition-colors"
+            >
+              Prices
+            </Link>
+            <Link
               href="/airdrops"
               className="text-gray-300 hover:text-white transition-colors"
             >
