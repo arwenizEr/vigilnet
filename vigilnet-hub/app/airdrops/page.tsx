@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState, useMemo, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import AirdropCard from '@/components/AirdropCard'
 import Pagination from '@/components/Pagination'
@@ -8,7 +8,7 @@ import { Airdrop } from '@/lib/types'
 
 const ITEMS_PER_PAGE = 12
 
-export default function AirdropsPage() {
+function AirdropsContent() {
   const searchParams = useSearchParams()
   const currentPage = parseInt(searchParams?.get('page') || '1', 10)
   const [airdrops, setAirdrops] = useState<Airdrop[]>([])
@@ -106,6 +106,24 @@ export default function AirdropsPage() {
         )}
       </div>
     </div>
+  )
+}
+
+export default function AirdropsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gray-900">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="text-center py-12">
+              <p className="text-gray-400">Loading airdrops...</p>
+            </div>
+          </div>
+        </div>
+      }
+    >
+      <AirdropsContent />
+    </Suspense>
   )
 }
 

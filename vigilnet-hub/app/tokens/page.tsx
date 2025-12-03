@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState, useMemo, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import TokenTable from '@/components/TokenTable'
 import Pagination from '@/components/Pagination'
@@ -8,7 +8,7 @@ import { Token, PriceUpdate } from '@/lib/types'
 
 const ITEMS_PER_PAGE = 50
 
-export default function TokensPage() {
+function TokensContent() {
   const searchParams = useSearchParams()
   const currentPage = parseInt(searchParams?.get('page') || '1', 10)
   const [tokens, setTokens] = useState<Token[]>([])
@@ -131,6 +131,24 @@ export default function TokensPage() {
         )}
       </div>
     </div>
+  )
+}
+
+export default function TokensPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gray-900">
+          <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="text-center py-12">
+              <p className="text-gray-400">Loading tokens...</p>
+            </div>
+          </div>
+        </div>
+      }
+    >
+      <TokensContent />
+    </Suspense>
   )
 }
 
