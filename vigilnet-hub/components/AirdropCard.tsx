@@ -6,15 +6,18 @@ interface AirdropCardProps {
 
 export default function AirdropCard({ airdrop }: AirdropCardProps) {
   const getStatusColor = (status?: string) => {
-    if (!status) return 'bg-gray-700 text-gray-300'
-    const statusLower = status.toLowerCase()
-    if (statusLower.includes('ongoing') || statusLower.includes('active')) {
-      return 'bg-green-900 text-green-300'
+    if (!status) return 'bg-gray-600'
+    const lowerStatus = status.toLowerCase()
+    if (lowerStatus.includes('active') || lowerStatus.includes('ongoing')) {
+      return 'bg-green-600'
     }
-    if (statusLower.includes('new') || statusLower.includes('upcoming')) {
-      return 'bg-blue-900 text-blue-300'
+    if (lowerStatus.includes('ended') || lowerStatus.includes('closed')) {
+      return 'bg-red-600'
     }
-    return 'bg-gray-700 text-gray-300'
+    if (lowerStatus.includes('upcoming') || lowerStatus.includes('soon')) {
+      return 'bg-blue-600'
+    }
+    return 'bg-gray-600'
   }
 
   return (
@@ -22,15 +25,15 @@ export default function AirdropCard({ airdrop }: AirdropCardProps) {
       href={airdrop.link}
       target="_blank"
       rel="noopener noreferrer"
-      className="block bg-gray-800 rounded-lg p-6 hover:bg-gray-750 transition-colors border border-gray-700 hover:border-gray-600"
+      className="block bg-gray-800 rounded-lg p-4 hover:bg-gray-750 transition-colors border border-gray-700"
     >
-      <div className="flex items-start justify-between mb-3">
-        <h3 className="text-lg font-semibold text-white flex-1 pr-4">
+      <div className="flex items-start justify-between mb-2">
+        <h3 className="text-lg font-semibold text-white line-clamp-2 flex-1">
           {airdrop.title}
         </h3>
         {airdrop.status && (
           <span
-            className={`text-xs font-medium px-2 py-1 rounded ${getStatusColor(
+            className={`ml-2 px-2 py-1 text-xs font-medium rounded-full text-white ${getStatusColor(
               airdrop.status
             )}`}
           >
@@ -40,25 +43,23 @@ export default function AirdropCard({ airdrop }: AirdropCardProps) {
       </div>
 
       {airdrop.description && (
-        <p className="text-sm text-gray-400 mb-4 line-clamp-2">
+        <p className="text-sm text-gray-400 mb-3 line-clamp-2">
           {airdrop.description}
         </p>
       )}
 
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center justify-between flex-wrap gap-2">
         {airdrop.reward && (
-          <div className="flex items-center space-x-2">
-            <span className="text-xs text-gray-500">Reward:</span>
-            <span className="text-sm font-medium text-yellow-400">
-              {airdrop.reward}
-            </span>
+          <div className="flex items-center text-sm text-gray-300">
+            <span className="text-gray-500 mr-1">Reward:</span>
+            <span className="font-medium text-green-400">{airdrop.reward}</span>
           </div>
         )}
+
         {airdrop.category && (
-          <div className="flex items-center space-x-2">
-            <span className="text-xs text-gray-500">Category:</span>
-            <span className="text-sm text-gray-300">{airdrop.category}</span>
-          </div>
+          <span className="px-2 py-1 text-xs bg-gray-700 text-gray-300 rounded">
+            {airdrop.category}
+          </span>
         )}
       </div>
     </a>

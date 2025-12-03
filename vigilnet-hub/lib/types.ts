@@ -14,6 +14,9 @@ export interface Token {
   symbol: string
   price: number
   priceChange24h: number
+  priceChange1h?: number
+  priceChange7d?: number
+  volume24h?: number
   marketCap?: number
   image?: string
   rank?: number

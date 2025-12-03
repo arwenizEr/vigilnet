@@ -2,11 +2,11 @@
 
 import { useEffect, useState, useMemo } from 'react'
 import { useSearchParams } from 'next/navigation'
-import TokenCard from '@/components/TokenCard'
+import TokenTable from '@/components/TokenTable'
 import Pagination from '@/components/Pagination'
 import { Token, PriceUpdate } from '@/lib/types'
 
-const ITEMS_PER_PAGE = 12
+const ITEMS_PER_PAGE = 50
 
 export default function TokensPage() {
   const searchParams = useSearchParams()
@@ -44,10 +44,13 @@ export default function TokensPage() {
       const res = await fetch(`/api/prices?ids=${coinIds}`)
       const data = await res.json()
 
-      if (data.success) {
-        const priceMap = new Map(
-          data.data.map((p: PriceUpdate) => [p.coinId, p])
-        )
+      if (data.success && Array.isArray(data.data)) {
+        const priceMap = new Map<string, PriceUpdate>()
+        data.data.forEach((p: PriceUpdate) => {
+          if (p && p.coinId && typeof p.price === 'number' && typeof p.priceChange24h === 'number') {
+            priceMap.set(p.coinId, p)
+          }
+        })
 
         setTokens((prev) =>
           prev.map((token) => {
@@ -92,41 +95,41 @@ export default function TokensPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Trending Tokens</h1>
-          <p className="text-gray-400">
-            Real-time cryptocurrency prices and trends ({tokens.length} tokens)
-          </p>
+    <div className="min-h-screen bg-gray-900">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="mb-6 flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-white mb-2">Trending Tokens</h1>
+            <p className="text-gray-400">
+              Real-time cryptocurrency prices and trends ({tokens.length} tokens)
+            </p>
+          </div>
+          <div className="text-right">
+            <p className="text-sm text-gray-500">Last updated</p>
+            <p className="text-sm text-gray-400">
+              {lastUpdate.toLocaleTimeString()}
+            </p>
+          </div>
         </div>
-        <div className="text-right">
-          <p className="text-sm text-gray-500">Last updated</p>
-          <p className="text-sm text-gray-400">
-            {lastUpdate.toLocaleTimeString()}
-          </p>
+
+        <div className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden shadow-lg">
+          <TokenTable tokens={paginatedTokens} />
         </div>
+
+        {tokens.length === 0 && !loading && (
+          <div className="text-center py-12">
+            <p className="text-gray-400">No tokens available at the moment.</p>
+          </div>
+        )}
+
+        {tokens.length > 0 && (
+          <Pagination
+            totalItems={tokens.length}
+            itemsPerPage={ITEMS_PER_PAGE}
+            currentPage={currentPage}
+          />
+        )}
       </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {paginatedTokens.map((token) => (
-          <TokenCard key={token.id} token={token} showRealTime />
-        ))}
-      </div>
-
-      {tokens.length === 0 && !loading && (
-        <div className="text-center py-12">
-          <p className="text-gray-400">No tokens available at the moment.</p>
-        </div>
-      )}
-
-      {tokens.length > 0 && (
-        <Pagination
-          totalItems={tokens.length}
-          itemsPerPage={ITEMS_PER_PAGE}
-          currentPage={currentPage}
-        />
-      )}
     </div>
   )
 }

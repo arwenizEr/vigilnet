@@ -2,11 +2,11 @@
 
 import { useEffect, useState, useMemo } from 'react'
 import { useSearchParams } from 'next/navigation'
-import TokenCard from '@/components/TokenCard'
+import TokenTable from '@/components/TokenTable'
 import Pagination from '@/components/Pagination'
 import { Token } from '@/lib/types'
 
-const ITEMS_PER_PAGE = 12
+const ITEMS_PER_PAGE = 50
 
 export default function PricesPage() {
   const searchParams = useSearchParams()
@@ -77,28 +77,27 @@ export default function PricesPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Real-time Prices</h1>
-          <p className="text-gray-400">
-            Live cryptocurrency prices and market data ({tokens.length} tokens)
-          </p>
+    <div className="min-h-screen bg-gray-900">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="mb-6 flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-white mb-2">Real-time Prices</h1>
+            <p className="text-gray-400">
+              Live cryptocurrency prices and market data ({tokens.length} tokens)
+            </p>
+          </div>
+          <div className="text-right">
+            <p className="text-sm text-gray-500">Last updated</p>
+            <p className="text-sm text-gray-400">
+              {lastUpdate.toLocaleTimeString()}
+            </p>
+            <p className="text-xs text-green-400 mt-1">● Live</p>
+          </div>
         </div>
-        <div className="text-right">
-          <p className="text-sm text-gray-500">Last updated</p>
-          <p className="text-sm text-gray-400">
-            {lastUpdate.toLocaleTimeString()}
-          </p>
-          <p className="text-xs text-green-400 mt-1">● Live</p>
-        </div>
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {paginatedTokens.map((token) => (
-          <TokenCard key={token.id} token={token} showRealTime />
-        ))}
-      </div>
+        <div className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden shadow-lg">
+          <TokenTable tokens={paginatedTokens} />
+        </div>
 
       {tokens.length === 0 && (
         <div className="text-center py-12">
@@ -106,13 +105,14 @@ export default function PricesPage() {
         </div>
       )}
 
-      {tokens.length > 0 && (
-        <Pagination
-          totalItems={tokens.length}
-          itemsPerPage={ITEMS_PER_PAGE}
-          currentPage={currentPage}
-        />
-      )}
+        {tokens.length > 0 && (
+          <Pagination
+            totalItems={tokens.length}
+            itemsPerPage={ITEMS_PER_PAGE}
+            currentPage={currentPage}
+          />
+        )}
+      </div>
     </div>
   )
 }

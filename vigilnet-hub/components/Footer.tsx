@@ -7,7 +7,7 @@ export default function Footer() {
             <h3 className="text-lg font-semibold text-white mb-4">VigilNet Hub</h3>
             <p className="text-gray-400 text-sm">
               Real-time crypto and AI content aggregation platform. 
-              Stay updated with the latest news, tokens, airdrops, and testnets.
+              Stay updated with the latest news, tokens, and prices.
             </p>
           </div>
           
@@ -25,13 +25,18 @@ export default function Footer() {
                 </a>
               </li>
               <li>
+                <a href="/prices" className="text-gray-400 hover:text-white transition-colors">
+                  Prices
+                </a>
+              </li>
+              <li>
                 <a href="/airdrops" className="text-gray-400 hover:text-white transition-colors">
                   Airdrops
                 </a>
               </li>
               <li>
-                <a href="/testnets" className="text-gray-400 hover:text-white transition-colors">
-                  Testnets
+                <a href="/ai" className="text-gray-400 hover:text-white transition-colors">
+                  AI News
                 </a>
               </li>
             </ul>
@@ -40,7 +45,7 @@ export default function Footer() {
           <div>
             <h3 className="text-lg font-semibold text-white mb-4">Data Sources</h3>
             <p className="text-gray-400 text-sm">
-              Powered by CoinGecko, CoinDesk, CoinTelegraph, Decrypt, 
+              Powered by CoinMarketCap, CoinGecko, CoinDesk, CoinTelegraph, Decrypt, 
               VentureBeat, and other public APIs and RSS feeds.
             </p>
           </div>

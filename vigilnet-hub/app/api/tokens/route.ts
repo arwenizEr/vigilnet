@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server'
-import { fetchTrendingTokens } from '@/lib/fetchers'
+import { fetchCMCTopTokens } from '@/lib/cmc'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 300 // Revalidate every 5 minutes
 
 export async function GET() {
   try {
-    const tokens = await fetchTrendingTokens()
+    const tokens = await fetchCMCTopTokens(200)
 
     return NextResponse.json({
       success: true,

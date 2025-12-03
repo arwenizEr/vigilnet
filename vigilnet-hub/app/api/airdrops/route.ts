@@ -1,12 +1,16 @@
 import { NextResponse } from 'next/server'
-import { scrapeAirdrops } from '@/lib/scraper'
+import { fetchCMCAirdrops } from '@/lib/cmc'
 
 export const dynamic = 'force-dynamic'
-export const revalidate = 600 // Revalidate every 10 minutes
+export const revalidate = 300 // Revalidate every 5 minutes
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const airdrops = await scrapeAirdrops()
+    const { searchParams } = new URL(request.url)
+    const limit = parseInt(searchParams.get('limit') || '50', 10)
+    const safeLimit = Math.min(limit, 100)
+
+    const airdrops = await fetchCMCAirdrops(safeLimit)
 
     return NextResponse.json({
       success: true,

@@ -45,12 +45,6 @@ export default function Navbar() {
               Airdrops
             </Link>
             <Link
-              href="/testnets"
-              className="text-gray-300 hover:text-white transition-colors"
-            >
-              Testnets
-            </Link>
-            <Link
               href="/ai"
               className="text-gray-300 hover:text-white transition-colors"
             >

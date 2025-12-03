@@ -7,9 +7,11 @@ export const revalidate = 60 // Revalidate every minute
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url)
-    const limit = parseInt(searchParams.get('limit') || '100', 10)
+    const limit = parseInt(searchParams.get('limit') || '200', 10)
+    // CoinMarketCap API - cap at 200 for safety
+    const safeLimit = Math.min(limit, 200)
 
-    const tokens = await fetchCMCTopTokens(limit)
+    const tokens = await fetchCMCTopTokens(safeLimit)
 
     return NextResponse.json({
       success: true,

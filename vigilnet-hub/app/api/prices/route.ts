@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { fetchTokenPrices } from '@/lib/fetchers'
+import { fetchCMCPrices } from '@/lib/cmc'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 60 // Revalidate every minute for real-time updates
@@ -20,8 +20,17 @@ export async function GET(request: Request) {
       )
     }
 
-    const coinIds = ids.split(',').filter(Boolean)
-    const prices = await fetchTokenPrices(coinIds)
+    const symbols = ids.split(',').filter(Boolean).map(s => s.toUpperCase())
+    const priceMap = await fetchCMCPrices(symbols)
+    
+    // Convert Map to PriceUpdate array format
+    const prices = Array.from(priceMap.entries()).map(([symbol, price]) => ({
+      coinId: symbol.toLowerCase(),
+      symbol: symbol.toUpperCase(),
+      price,
+      priceChange24h: 0, // Will be updated from full token data if available
+      timestamp: Date.now(),
+    }))
 
     return NextResponse.json({
       success: true,
