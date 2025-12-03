@@ -6,14 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "postinstall": "node -e \"process.env.DATABASE_URL ? require('child_process').execSync('prisma generate', {stdio: 'inherit'}) : console.log('Prisma skipped: DATABASE_URL not set')\"",
-    "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate dev",
-    "prisma:studio": "prisma studio"
+    "lint": "next lint"
   },
   "dependencies": {
-    "@prisma/client": "^5.7.1",
     "axios": "^1.6.2",
     "cheerio": "^1.0.0-rc.12",
     "next": "^14.2.3",
@@ -27,7 +22,6 @@
     "@types/react-dom": "^18.3.0",
     "autoprefixer": "^10.4.19",
     "postcss": "^8.4.38",
-    "prisma": "^5.7.1",
     "tailwindcss": "^3.4.4",
     "typescript": "^5.5.2"
   }
