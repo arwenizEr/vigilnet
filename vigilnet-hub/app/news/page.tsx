@@ -1,24 +1,26 @@
 import NewsCard from '@/components/NewsCard'
 import Pagination from '@/components/Pagination'
 import { NewsItem } from '@/lib/types'
-
-const getBaseUrl = () => {
-  if (typeof window !== 'undefined') return ''
-  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`
-  return process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
-}
+import { fetchMultipleRSSFeeds } from '@/lib/rss'
 
 const ITEMS_PER_PAGE = 12
 
-async function getNews() {
+// Crypto News RSS feeds
+const CRYPTO_FEEDS = [
+  { url: 'https://coinmarketcap.com/headlines/news/rss/', source: 'CoinMarketCap' },
+  { url: 'https://coindesk.com/arc/outboundfeeds/rss/', source: 'CoinDesk' },
+  { url: 'https://cointelegraph.com/rss', source: 'CoinTelegraph' },
+  { url: 'https://decrypt.co/feed', source: 'Decrypt' },
+]
+
+async function getNews(): Promise<NewsItem[]> {
   try {
-    const baseUrl = getBaseUrl()
-    const res = await fetch(`${baseUrl}/api/news`, {
-      next: { revalidate: 300 },
-    })
-    const data = await res.json()
-    return data.data || []
+    console.log('NewsPage: Fetching crypto news from RSS feeds...')
+    const newsItems = await fetchMultipleRSSFeeds(CRYPTO_FEEDS)
+    console.log(`NewsPage: Successfully fetched ${newsItems.length} news items`)
+    return newsItems
   } catch (error) {
+    console.error('NewsPage: Error fetching news:', error)
     return []
   }
 }
@@ -50,8 +52,9 @@ export default async function NewsPage({
       </div>
 
       {news.length === 0 && (
-        <div className="text-center py-12">
-          <p className="text-gray-400">No news available at the moment.</p>
+        <div className="bg-yellow-900/20 border border-yellow-700 rounded-lg p-6 text-center">
+          <p className="text-yellow-400 mb-2">No news available at the moment</p>
+          <p className="text-yellow-500 text-sm">RSS feeds may be temporarily unavailable. Please check back later.</p>
         </div>
       )}
 

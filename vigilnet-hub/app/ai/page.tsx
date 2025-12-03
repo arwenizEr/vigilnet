@@ -1,24 +1,41 @@
 import NewsCard from '@/components/NewsCard'
 import Pagination from '@/components/Pagination'
 import { NewsItem } from '@/lib/types'
-
-const getBaseUrl = () => {
-  if (typeof window !== 'undefined') return ''
-  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`
-  return process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
-}
+import { fetchMultipleRSSFeeds } from '@/lib/rss'
 
 const ITEMS_PER_PAGE = 12
 
-async function getAINews() {
+// AI News RSS feeds
+const AI_FEEDS = [
+  { url: 'https://venturebeat.com/feed/', source: 'VentureBeat' },
+  { url: 'https://thenextweb.com/feed', source: 'The Next Web' },
+]
+
+async function getAINews(): Promise<NewsItem[]> {
   try {
-    const baseUrl = getBaseUrl()
-    const res = await fetch(`${baseUrl}/api/ai`, {
-      next: { revalidate: 300 },
+    console.log('AIPage: Fetching AI news from RSS feeds...')
+    const newsItems = await fetchMultipleRSSFeeds(AI_FEEDS)
+    
+    // Filter for AI-related content
+    const aiNews = newsItems.filter((item) => {
+      const titleLower = item.title.toLowerCase()
+      const contentLower = (item.content || '').toLowerCase()
+      return (
+        titleLower.includes('ai') ||
+        titleLower.includes('artificial intelligence') ||
+        titleLower.includes('machine learning') ||
+        titleLower.includes('ml') ||
+        contentLower.includes('ai') ||
+        contentLower.includes('artificial intelligence')
+      )
     })
-    const data = await res.json()
-    return data.data || []
+    
+    // Use filtered AI news if available, otherwise use all news
+    const result = aiNews.length > 0 ? aiNews : newsItems
+    console.log(`AIPage: Successfully fetched ${result.length} AI news items (${aiNews.length} filtered from ${newsItems.length} total)`)
+    return result
   } catch (error) {
+    console.error('AIPage: Error fetching AI news:', error)
     return []
   }
 }
@@ -50,8 +67,9 @@ export default async function AIPage({
       </div>
 
       {news.length === 0 && (
-        <div className="text-center py-12">
-          <p className="text-gray-400">No AI news available at the moment.</p>
+        <div className="bg-yellow-900/20 border border-yellow-700 rounded-lg p-6 text-center">
+          <p className="text-yellow-400 mb-2">No AI news available at the moment</p>
+          <p className="text-yellow-500 text-sm">RSS feeds may be temporarily unavailable. Please check back later.</p>
         </div>
       )}
 
