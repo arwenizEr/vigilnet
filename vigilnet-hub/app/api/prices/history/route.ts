@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { fetchCMCPriceHistory } from '@/lib/cmc'
 
+export const dynamic = 'force-dynamic' // This route uses request.url, so it must be dynamic
 export const revalidate = 3600 // Revalidate every hour (historical data doesn't change frequently)
 
 export async function GET(request: Request) {
