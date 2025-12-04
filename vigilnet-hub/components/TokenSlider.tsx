@@ -2,6 +2,7 @@
 
 import { Token } from '@/lib/types'
 import Image from 'next/image'
+import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 
 interface TokenSliderProps {
@@ -107,9 +108,10 @@ export default function TokenSlider({ tokens }: TokenSliderProps) {
         }}
       >
         {tokens.map((token) => (
-          <div
+          <Link
             key={token.id}
-            className="flex-shrink-0 w-64 bg-gray-800 rounded-lg p-4 border border-gray-700 hover:border-gray-600 transition-all hover:shadow-lg"
+            href={`/tokens/${token.symbol.toLowerCase()}`}
+            className="flex-shrink-0 w-64 bg-gray-800 rounded-lg p-4 border border-gray-700 hover:border-gray-600 transition-all hover:shadow-lg cursor-pointer block"
           >
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center space-x-3">
@@ -165,13 +167,13 @@ export default function TokenSlider({ tokens }: TokenSliderProps) {
                         ? `$${(token.marketCap / 1e9).toFixed(2)}B`
                         : token.marketCap >= 1e6
                         ? `$${(token.marketCap / 1e6).toFixed(2)}M`
-                        : `$${token.marketCap.toLocaleString()}`}
+                        : `$${token.marketCap.toLocaleString('en-US')}`}
                     </p>
                   </div>
                 )}
               </div>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
 

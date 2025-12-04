@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import SearchBar from './SearchBar'
 
 export default function Navbar() {
   return (
@@ -13,7 +14,11 @@ export default function Navbar() {
             </Link>
           </div>
           
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-4 flex-1 justify-center max-w-md mx-4">
+            <SearchBar />
+          </div>
+          
+          <div className="hidden md:flex items-center space-x-6">
             <Link
               href="/"
               className="text-gray-300 hover:text-white transition-colors"
@@ -24,7 +29,7 @@ export default function Navbar() {
               href="/news"
               className="text-gray-300 hover:text-white transition-colors"
             >
-              Crypto News
+              News
             </Link>
             <Link
               href="/tokens"
@@ -39,16 +44,34 @@ export default function Navbar() {
               Prices
             </Link>
             <Link
-              href="/airdrops"
+              href="/analytics"
               className="text-gray-300 hover:text-white transition-colors"
             >
-              Airdrops
+              Analytics
             </Link>
             <Link
-              href="/ai"
+              href="/defi"
               className="text-gray-300 hover:text-white transition-colors"
             >
-              AI News
+              DeFi
+            </Link>
+            <Link
+              href="/exchanges"
+              className="text-gray-300 hover:text-white transition-colors"
+            >
+              Exchanges
+            </Link>
+            <Link
+              href="/watchlist"
+              className="text-gray-300 hover:text-white transition-colors"
+            >
+              Watchlist
+            </Link>
+            <Link
+              href="/compare"
+              className="text-gray-300 hover:text-white transition-colors"
+            >
+              Compare
             </Link>
           </div>
 

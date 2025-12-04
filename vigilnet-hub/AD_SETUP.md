@@ -264,3 +264,4 @@ Instead of display ads, consider:
 - Review Next.js documentation for script loading
 - Test in production (some ads don't work in development)
 
+

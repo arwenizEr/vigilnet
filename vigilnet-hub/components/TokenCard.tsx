@@ -1,5 +1,6 @@
 import { Token } from '@/lib/types'
 import Image from 'next/image'
+import Link from 'next/link'
 
 interface TokenCardProps {
   token: Token
@@ -12,7 +13,8 @@ export default function TokenCard({ token, showRealTime = false }: TokenCardProp
   const priceChangeIcon = isPositive ? '↑' : '↓'
 
   return (
-    <div className="bg-gray-800 rounded-lg p-6 border border-gray-700 hover:border-gray-600 transition-colors">
+    <Link href={`/tokens/${token.symbol.toLowerCase()}`}>
+      <div className="bg-gray-800 rounded-lg p-6 border border-gray-700 hover:border-gray-600 transition-colors cursor-pointer">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-3">
           {token.image && (
@@ -72,7 +74,9 @@ export default function TokenCard({ token, showRealTime = false }: TokenCardProp
           <p className="text-xs text-gray-500">Live updates enabled</p>
         </div>
       )}
-    </div>
+      </div>
+    </Link>
   )
 }
+
 

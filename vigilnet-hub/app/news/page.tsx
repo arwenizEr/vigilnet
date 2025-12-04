@@ -1,7 +1,7 @@
-import NewsCard from '@/components/NewsCard'
 import Pagination from '@/components/Pagination'
 import { NewsItem } from '@/lib/types'
 import { fetchMultipleRSSFeeds } from '@/lib/rss'
+import NewsFilters from '@/components/NewsFilters'
 
 const ITEMS_PER_PAGE = 12
 
@@ -31,10 +31,6 @@ export default async function NewsPage({
   searchParams: { page?: string }
 }) {
   const news = await getNews()
-  const currentPage = parseInt(searchParams?.page || '1', 10)
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
-  const endIndex = startIndex + ITEMS_PER_PAGE
-  const paginatedNews = news.slice(startIndex, endIndex)
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -45,11 +41,7 @@ export default async function NewsPage({
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {paginatedNews.map((item: NewsItem) => (
-          <NewsCard key={item.id} news={item} />
-        ))}
-      </div>
+      <NewsFilters news={news} />
 
       {news.length === 0 && (
         <div className="bg-yellow-900/20 border border-yellow-700 rounded-lg p-6 text-center">
@@ -58,13 +50,6 @@ export default async function NewsPage({
         </div>
       )}
 
-      {news.length > 0 && (
-        <Pagination
-          totalItems={news.length}
-          itemsPerPage={ITEMS_PER_PAGE}
-          currentPage={currentPage}
-        />
-      )}
     </div>
   )
 }

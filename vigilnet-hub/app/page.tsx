@@ -1,17 +1,11 @@
 import NewsCard from '@/components/NewsCard'
 import AirdropCard from '@/components/AirdropCard'
 import TokenSlider from '@/components/TokenSlider'
-import AdSlot from '@/components/AdSlot'
+import MarketStatsCard from '@/components/MarketStatsCard'
 import { NewsItem, Token, Airdrop } from '@/lib/types'
 import { fetchMultipleRSSFeeds } from '@/lib/rss'
-import { fetchCMCTopTokens } from '@/lib/cmc'
+import { fetchCMCTopTokens, fetchCMCMarketStats, fetchCMCTopGainersLosers } from '@/lib/cmc'
 import { fetchCMCAirdrops } from '@/lib/cmc'
-
-// AI News RSS feeds
-const AI_FEEDS = [
-  { url: 'https://venturebeat.com/feed/', source: 'VentureBeat' },
-  { url: 'https://thenextweb.com/feed', source: 'The Next Web' },
-]
 
 // Crypto News RSS feeds
 const CRYPTO_FEEDS = [
@@ -45,18 +39,6 @@ async function getTokens(): Promise<Token[]> {
   }
 }
 
-async function getAINews(): Promise<NewsItem[]> {
-  try {
-    console.log('Fetching AI news from RSS feeds...')
-    const newsItems = await fetchMultipleRSSFeeds(AI_FEEDS)
-    console.log(`Successfully fetched ${newsItems.length} AI news items`)
-    return newsItems
-  } catch (error) {
-    console.error('Error fetching AI news:', error)
-    return []
-  }
-}
-
 async function getAirdrops(): Promise<Airdrop[]> {
   try {
     console.log('Fetching airdrops from CoinMarketCap...')
@@ -72,14 +54,15 @@ async function getAirdrops(): Promise<Airdrop[]> {
 export default async function HomePage() {
   console.log('HomePage: Starting data fetch...')
   
-  const [news, tokens, aiNews, airdrops] = await Promise.all([
+  const [news, tokens, airdrops, marketStats, gainersLosers] = await Promise.all([
     getNews(),
     getTokens(),
-    getAINews(),
     getAirdrops(),
+    fetchCMCMarketStats(),
+    fetchCMCTopGainersLosers(),
   ])
   
-  console.log(`HomePage: Data fetch complete - News: ${news.length}, Tokens: ${tokens.length}, AI News: ${aiNews.length}, Airdrops: ${airdrops.length}`)
+  console.log(`HomePage: Data fetch complete - News: ${news.length}, Tokens: ${tokens.length}, Airdrops: ${airdrops.length}`)
 
   return (
     <div className="min-h-screen bg-gray-900">
@@ -90,7 +73,7 @@ export default async function HomePage() {
             VigilNet Hub
           </h1>
           <p className="text-xl text-gray-400">
-            Real-time crypto & AI content aggregation
+            Real-time crypto market data & news aggregation
           </p>
         </div>
 
@@ -117,19 +100,6 @@ export default async function HomePage() {
             <TokenSlider tokens={tokens.slice(0, 20)} />
           </section>
         )}
-
-        {/* Ad Slot - Top */}
-        <div className="mb-8">
-          <AdSlot
-            adSlotId="top-banner"
-            adFormat="horizontal"
-            googleAdClient={process.env.NEXT_PUBLIC_GOOGLE_ADSENSE_CLIENT_ID}
-            googleAdSlot={process.env.NEXT_PUBLIC_GOOGLE_ADSENSE_SLOT_TOP}
-            adNetwork={(process.env.NEXT_PUBLIC_AD_NETWORK as any) || 'google'}
-            customAdCode={process.env.NEXT_PUBLIC_CUSTOM_AD_CODE_TOP}
-            className="w-full"
-          />
-        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
@@ -182,58 +152,117 @@ export default async function HomePage() {
 
           {/* Sidebar */}
           <div className="space-y-8">
-            {/* Ad Slot - Sidebar */}
-            <AdSlot
-              adSlotId="sidebar-banner"
-              adFormat="vertical"
-              googleAdClient={process.env.NEXT_PUBLIC_GOOGLE_ADSENSE_CLIENT_ID}
-              googleAdSlot={process.env.NEXT_PUBLIC_GOOGLE_ADSENSE_SLOT_SIDEBAR}
-              adNetwork={(process.env.NEXT_PUBLIC_AD_NETWORK as any) || 'google'}
-              customAdCode={process.env.NEXT_PUBLIC_CUSTOM_AD_CODE_SIDEBAR}
-            />
+            {/* Market Stats */}
+            {marketStats && (
+              <MarketStatsCard stats={marketStats} />
+            )}
 
-            {/* Latest AI News */}
-            <section>
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-white">AI News</h2>
-                <a
-                  href="/ai"
-                  className="text-blue-400 hover:text-blue-300 text-sm font-medium"
-                >
-                  View All ({aiNews.length}) →
-                </a>
-              </div>
-              <div className="space-y-4">
-                {aiNews.slice(0, 6).map((item: NewsItem) => (
+            {/* Top Gainers */}
+            {gainersLosers.gainers.length > 0 && (
+              <section>
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-xl font-bold text-white">Top Gainers (24h)</h2>
                   <a
-                    key={item.id}
-                    href={item.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block bg-gray-800 rounded-lg p-4 hover:bg-gray-750 transition-colors border border-gray-700"
+                    href="/analytics"
+                    className="text-blue-400 hover:text-blue-300 text-sm font-medium"
                   >
-                    <h3 className="text-sm font-semibold text-white mb-2 line-clamp-2">
-                      {item.title}
-                    </h3>
-                    <p className="text-xs text-gray-400">{item.source}</p>
+                    View All →
                   </a>
-                ))}
-              </div>
-            </section>
-          </div>
-        </div>
+                </div>
+                <div className="space-y-3">
+                  {gainersLosers.gainers.slice(0, 5).map((token: Token) => (
+                    <a
+                      key={token.id}
+                      href={`/tokens/${token.symbol.toLowerCase()}`}
+                      className="block bg-gray-800 rounded-lg p-3 hover:bg-gray-750 transition-colors border border-gray-700"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                          {token.image && (
+                            <img src={token.image} alt={token.name} className="w-6 h-6 rounded-full" />
+                          )}
+                          <div>
+                            <div className="text-sm font-semibold text-white">{token.symbol}</div>
+                            <div className="text-xs text-gray-400">{token.name}</div>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-sm font-semibold text-green-400">
+                            +{token.priceChange24h.toFixed(2)}%
+                          </div>
+                          <div className="text-xs text-gray-400">
+                            ${token.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 6 })}
+                          </div>
+                          {token.marketCap && (
+                            <div className="text-xs text-gray-500 mt-1">
+                              {token.marketCap >= 1e9
+                                ? `$${(token.marketCap / 1e9).toFixed(2)}B`
+                                : token.marketCap >= 1e6
+                                ? `$${(token.marketCap / 1e6).toFixed(2)}M`
+                                : `$${token.marketCap.toLocaleString('en-US')}`}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              </section>
+            )}
 
-        {/* Ad Slot - Bottom */}
-        <div className="mt-12">
-          <AdSlot
-            adSlotId="bottom-banner"
-            adFormat="horizontal"
-            googleAdClient={process.env.NEXT_PUBLIC_GOOGLE_ADSENSE_CLIENT_ID}
-            googleAdSlot={process.env.NEXT_PUBLIC_GOOGLE_ADSENSE_SLOT_BOTTOM}
-            adNetwork={(process.env.NEXT_PUBLIC_AD_NETWORK as any) || 'google'}
-            customAdCode={process.env.NEXT_PUBLIC_CUSTOM_AD_CODE_BOTTOM}
-            className="w-full"
-          />
+            {/* Top Losers */}
+            {gainersLosers.losers.length > 0 && (
+              <section>
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-xl font-bold text-white">Top Losers (24h)</h2>
+                  <a
+                    href="/analytics"
+                    className="text-blue-400 hover:text-blue-300 text-sm font-medium"
+                  >
+                    View All →
+                  </a>
+                </div>
+                <div className="space-y-3">
+                  {gainersLosers.losers.slice(0, 5).map((token: Token) => (
+                    <a
+                      key={token.id}
+                      href={`/tokens/${token.symbol.toLowerCase()}`}
+                      className="block bg-gray-800 rounded-lg p-3 hover:bg-gray-750 transition-colors border border-gray-700"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                          {token.image && (
+                            <img src={token.image} alt={token.name} className="w-6 h-6 rounded-full" />
+                          )}
+                          <div>
+                            <div className="text-sm font-semibold text-white">{token.symbol}</div>
+                            <div className="text-xs text-gray-400">{token.name}</div>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-sm font-semibold text-red-400">
+                            {token.priceChange24h.toFixed(2)}%
+                          </div>
+                          <div className="text-xs text-gray-400">
+                            ${token.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 6 })}
+                          </div>
+                          {token.marketCap && (
+                            <div className="text-xs text-gray-500 mt-1">
+                              {token.marketCap >= 1e9
+                                ? `$${(token.marketCap / 1e9).toFixed(2)}B`
+                                : token.marketCap >= 1e6
+                                ? `$${(token.marketCap / 1e6).toFixed(2)}M`
+                                : `$${token.marketCap.toLocaleString('en-US')}`}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              </section>
+            )}
+          </div>
         </div>
       </div>
     </div>

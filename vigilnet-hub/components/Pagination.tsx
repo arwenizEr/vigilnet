@@ -110,3 +110,4 @@ export default function Pagination({ totalItems, itemsPerPage, currentPage }: Pa
   )
 }
 
+

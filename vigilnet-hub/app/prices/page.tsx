@@ -52,9 +52,20 @@ function PricesContent() {
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="text-center py-12">
-          <p className="text-gray-400">Loading cryptocurrency prices...</p>
+      <div className="min-h-screen bg-gray-900">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="mb-6">
+            <div className="h-8 w-64 bg-gray-700 rounded mb-2 animate-pulse"></div>
+            <div className="h-4 w-96 bg-gray-700 rounded animate-pulse"></div>
+          </div>
+          <div className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
+            <div className="animate-pulse">
+              <div className="h-12 bg-gray-700"></div>
+              {[1, 2, 3, 4, 5].map((i) => (
+                <div key={i} className="h-16 border-b border-gray-700 bg-gray-800"></div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     )
@@ -123,8 +134,17 @@ export default function PricesPage() {
       fallback={
         <div className="min-h-screen bg-gray-900">
           <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div className="text-center py-12">
-              <p className="text-gray-400">Loading cryptocurrency prices...</p>
+            <div className="mb-6">
+              <div className="h-8 w-64 bg-gray-700 rounded mb-2 animate-pulse"></div>
+              <div className="h-4 w-96 bg-gray-700 rounded animate-pulse"></div>
+            </div>
+            <div className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
+              <div className="animate-pulse">
+                <div className="h-12 bg-gray-700"></div>
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <div key={i} className="h-16 border-b border-gray-700 bg-gray-800"></div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
