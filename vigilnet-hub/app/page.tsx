@@ -194,7 +194,7 @@ export default async function HomePage() {
                             </span>
                           </div>
                           <div className="text-xs text-gray-400">
-                            ${token.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 6 })}
+                            ${token.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                           </div>
                           {token.marketCap && (
                             <div className="text-xs text-gray-500 mt-1">
@@ -250,7 +250,7 @@ export default async function HomePage() {
                             </span>
                           </div>
                           <div className="text-xs text-gray-400">
-                            ${token.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 6 })}
+                            ${token.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                           </div>
                           {token.marketCap && (
                             <div className="text-xs text-gray-500 mt-1">

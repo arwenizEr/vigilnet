@@ -49,15 +49,9 @@ export default function TokenSlider({ tokens }: TokenSliderProps) {
   }
 
   const formatPrice = (price: number) => {
-    if (price >= 1) {
-      return price.toLocaleString('en-US', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      })
-    }
     return price.toLocaleString('en-US', {
       minimumFractionDigits: 2,
-      maximumFractionDigits: 6,
+      maximumFractionDigits: 2,
     })
   }
 

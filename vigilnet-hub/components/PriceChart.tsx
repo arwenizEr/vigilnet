@@ -20,8 +20,13 @@ export default function PriceChart({ symbol, currentPrice }: PriceChartProps) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [isMobile, setIsMobile] = useState(false)
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    setMounted(true)
+    
+    if (typeof window === 'undefined') return
+    
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768)
     }
@@ -136,10 +141,7 @@ export default function PriceChart({ symbol, currentPrice }: PriceChartProps) {
   }, [timeframe, symbol, currentPrice])
 
   const formatPrice = (price: number) => {
-    if (currentPrice >= 1) {
-      return `$${price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-    }
-    return `$${price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 8 })}`
+    return `$${price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
   }
 
   const getPriceChange = () => {
@@ -180,8 +182,9 @@ export default function PriceChart({ symbol, currentPrice }: PriceChartProps) {
         </div>
       </div>
       
-      <ResponsiveContainer width="100%" height={isMobile ? 300 : 450}>
-        <AreaChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+      {mounted && data.length > 0 && (
+        <ResponsiveContainer width="100%" height={isMobile ? 300 : 450}>
+          <AreaChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
           <defs>
             <linearGradient id="priceGradient" x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor={isPositive ? '#10B981' : '#EF4444'} stopOpacity={0.3} />
@@ -227,7 +230,8 @@ export default function PriceChart({ symbol, currentPrice }: PriceChartProps) {
             fillOpacity={1}
           />
         </AreaChart>
-      </ResponsiveContainer>
+        </ResponsiveContainer>
+      )}
       
       {loading && (
         <div className="mt-4 text-center text-gray-400 text-sm">Loading price history...</div>

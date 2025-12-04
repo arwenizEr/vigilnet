@@ -114,7 +114,7 @@ export default function MarketAnalyticsView({ stats, gainers, losers }: MarketAn
                         </div>
                       </td>
                       <td className="px-6 py-4 text-right text-white">
-                        ${token.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 8 })}
+                        ${token.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </td>
                       <td className={`px-6 py-4 text-right font-semibold ${getPriceChangeColor(token.priceChange24h)}`}>
                         <span className="inline-flex items-center justify-end gap-1 tabular-nums">
@@ -166,7 +166,7 @@ export default function MarketAnalyticsView({ stats, gainers, losers }: MarketAn
                         </div>
                       </td>
                       <td className="px-6 py-4 text-right text-white">
-                        ${token.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 8 })}
+                        ${token.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </td>
                       <td className={`px-6 py-4 text-right font-semibold ${getPriceChangeColor(token.priceChange24h)}`}>
                         <span className="inline-flex items-center justify-end gap-1 tabular-nums">

@@ -46,7 +46,7 @@ export default function TokenCard({ token, showRealTime = false }: TokenCardProp
           <p className="text-2xl font-bold text-white">
             ${token.price.toLocaleString('en-US', {
               minimumFractionDigits: 2,
-              maximumFractionDigits: 6,
+              maximumFractionDigits: 2,
             })}
           </p>
         </div>

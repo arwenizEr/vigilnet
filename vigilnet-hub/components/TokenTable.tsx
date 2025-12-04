@@ -16,15 +16,9 @@ export default function TokenTable({ tokens }: TokenTableProps) {
   }
 
   const formatPrice = (price: number) => {
-    if (price >= 1) {
-      return price.toLocaleString('en-US', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      })
-    }
     return price.toLocaleString('en-US', {
       minimumFractionDigits: 2,
-      maximumFractionDigits: 8,
+      maximumFractionDigits: 2,
     })
   }
 

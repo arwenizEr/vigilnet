@@ -152,7 +152,7 @@ export default function TokenComparison({ initialSymbols }: TokenComparisonProps
                 <td className="py-4 px-6 text-gray-300 font-medium">Price</td>
                 {tokens.map((token, index) => (
                   <td key={index} className="py-4 px-6 text-center text-white">
-                    {token?.price ? `$${token.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 8 })}` : 'N/A'}
+                    {token?.price ? `$${token.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : 'N/A'}
                   </td>
                 ))}
               </tr>
