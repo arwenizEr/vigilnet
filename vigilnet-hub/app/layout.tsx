@@ -9,6 +9,16 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'VigilNet Hub - Real-time Crypto & AI Aggregator',
   description: 'Real-time crypto news, trending tokens, airdrops, testnets, and AI news aggregation platform',
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 5,
+    userScalable: true,
+  },
+  icons: {
+    icon: '/favicon.ico',
+    apple: '/favicon.ico',
+  },
 }
 
 export default function RootLayout({

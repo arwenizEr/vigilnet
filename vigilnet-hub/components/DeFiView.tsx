@@ -33,7 +33,11 @@ export default function DeFiView({ protocols }: DeFiViewProps) {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {protocols.map((protocol) => (
-              <div key={protocol.id} className="bg-gray-800 rounded-lg p-6 hover:bg-gray-750 transition-colors">
+              <Link 
+                key={protocol.id} 
+                href={`/tokens/${protocol.symbol.toLowerCase()}`}
+                className="bg-gray-800 rounded-lg p-6 hover:bg-gray-750 transition-colors cursor-pointer block"
+              >
                 <div className="flex items-center space-x-3 mb-4">
                   {protocol.logo && (
                     <Image src={protocol.logo} alt={protocol.name} width={48} height={48} className="rounded-full" />
@@ -71,7 +75,7 @@ export default function DeFiView({ protocols }: DeFiViewProps) {
                     </a>
                   )}
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         )}

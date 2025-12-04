@@ -144,7 +144,7 @@ export default function TokenDetailView({ token, relatedNews }: TokenDetailViewP
         {/* Price Chart */}
         <div className="bg-gray-800 rounded-lg p-6 mb-8">
           <h2 className="text-xl font-bold text-white mb-4">Price Chart</h2>
-          <PriceChart symbol={token.symbol} />
+          <PriceChart symbol={token.symbol} currentPrice={token.price} />
         </div>
 
         {/* Extended Stats Grid */}

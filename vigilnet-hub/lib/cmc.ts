@@ -330,8 +330,58 @@ export async function fetchCMCMarketStats(): Promise<MarketStats | null> {
 
 export async function fetchCMCPriceHistory(symbol: string, days: number = 30): Promise<PriceHistory[]> {
   // Note: CoinMarketCap API doesn't provide historical price data in the free tier
-  // This is a placeholder that would need to use a different API or paid tier
-  return []
+  // Using CoinGecko API for historical data (free tier available)
+  try {
+    console.log(`[PriceHistory] Fetching history for ${symbol}, days: ${days}`)
+    
+    // First, get the CoinGecko ID from the symbol
+    const searchResponse = await axios.get('https://api.coingecko.com/api/v3/search', {
+      params: {
+        query: symbol.toLowerCase(),
+      },
+      timeout: 10000,
+    })
+
+    if (!searchResponse.data?.coins || searchResponse.data.coins.length === 0) {
+      console.warn(`[PriceHistory] No CoinGecko ID found for symbol: ${symbol}`)
+      return []
+    }
+
+    const coinId = searchResponse.data.coins[0].id
+    console.log(`[PriceHistory] Found CoinGecko ID: ${coinId} for symbol: ${symbol}`)
+    
+    const daysParam = days === 365 ? 365 : days === 90 ? 90 : days === 7 ? 7 : 30
+
+    // Fetch historical market data
+    const historyResponse = await axios.get(`https://api.coingecko.com/api/v3/coins/${coinId}/market_chart`, {
+      params: {
+        vs_currency: 'usd',
+        days: daysParam,
+        interval: daysParam <= 7 ? 'hourly' : 'daily',
+      },
+      timeout: 15000,
+    })
+
+    if (historyResponse.data?.prices && Array.isArray(historyResponse.data.prices)) {
+      const priceData = historyResponse.data.prices.map(([timestamp, price]: [number, number]) => ({
+        timestamp,
+        price,
+        date: new Date(timestamp).toISOString(),
+      }))
+      console.log(`[PriceHistory] Successfully fetched ${priceData.length} data points for ${symbol}`)
+      return priceData
+    }
+
+    console.warn(`[PriceHistory] No price data in response for ${symbol}`)
+    return []
+  } catch (error: any) {
+    console.error(`[PriceHistory] Error fetching price history for ${symbol} from CoinGecko:`, error.message)
+    if (error.response) {
+      console.error(`[PriceHistory] Response status: ${error.response.status}`)
+      console.error(`[PriceHistory] Response data:`, error.response.data)
+    }
+    return []
+  }
 }
 
 export async function fetchCMCTopGainersLosers(): Promise<{ gainers: Token[]; losers: Token[] }> {

@@ -2,12 +2,19 @@
 
 import { Token } from '@/lib/types'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 
 interface TokenTableProps {
   tokens: Token[]
 }
 
 export default function TokenTable({ tokens }: TokenTableProps) {
+  const router = useRouter()
+
+  const handleRowClick = (symbol: string) => {
+    router.push(`/tokens/${symbol.toLowerCase()}`)
+  }
+
   const formatPrice = (price: number) => {
     if (price >= 1) {
       return price.toLocaleString('en-US', {
@@ -39,7 +46,7 @@ export default function TokenTable({ tokens }: TokenTableProps) {
 
   const formatPercentage = (value?: number) => {
     if (value === undefined || value === null) return 'N/A'
-    return `${value >= 0 ? '+' : ''}${value.toFixed(2)}%`
+    return `${Math.abs(value).toFixed(2)}%`
   }
 
   const getPriceChangeColor = (change: number) => {
@@ -69,7 +76,8 @@ export default function TokenTable({ tokens }: TokenTableProps) {
           {tokens.map((token, index) => (
             <tr
               key={token.id}
-              className="border-b border-gray-800/50 hover:bg-gray-800/30 transition-colors"
+              onClick={() => handleRowClick(token.symbol)}
+              className="border-b border-gray-800/50 hover:bg-gray-800/30 transition-colors cursor-pointer"
             >
               <td className="py-4 px-6">
                 <span className="text-gray-500 text-sm font-medium">{token.rank || index + 1}</span>
@@ -100,17 +108,26 @@ export default function TokenTable({ tokens }: TokenTableProps) {
               </td>
               <td className="py-4 px-6 text-right">
                 <span className={`font-semibold text-sm ${getPriceChangeColor(token.priceChange1h || 0)}`}>
-                  {getPriceChangeIcon(token.priceChange1h || 0)} {formatPercentage(token.priceChange1h)}
+                  <span className="inline-flex items-center justify-end gap-1 tabular-nums">
+                    <span>{getPriceChangeIcon(token.priceChange1h || 0)}</span>
+                    <span className="font-mono">{formatPercentage(token.priceChange1h)}</span>
+                  </span>
                 </span>
               </td>
               <td className="py-4 px-6 text-right">
                 <span className={`font-semibold text-sm ${getPriceChangeColor(token.priceChange24h)}`}>
-                  {getPriceChangeIcon(token.priceChange24h)} {formatPercentage(token.priceChange24h)}
+                  <span className="inline-flex items-center justify-end gap-1 tabular-nums">
+                    <span>{getPriceChangeIcon(token.priceChange24h)}</span>
+                    <span className="font-mono">{formatPercentage(token.priceChange24h)}</span>
+                  </span>
                 </span>
               </td>
               <td className="py-4 px-6 text-right">
                 <span className={`font-semibold text-sm ${getPriceChangeColor(token.priceChange7d || 0)}`}>
-                  {getPriceChangeIcon(token.priceChange7d || 0)} {formatPercentage(token.priceChange7d)}
+                  <span className="inline-flex items-center justify-end gap-1 tabular-nums">
+                    <span>{getPriceChangeIcon(token.priceChange7d || 0)}</span>
+                    <span className="font-mono">{formatPercentage(token.priceChange7d)}</span>
+                  </span>
                 </span>
               </td>
               <td className="py-4 px-6 text-right">

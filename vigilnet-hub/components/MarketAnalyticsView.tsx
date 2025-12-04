@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import { MarketStats, Token } from '@/lib/types'
 
 interface MarketAnalyticsViewProps {
@@ -11,6 +12,12 @@ interface MarketAnalyticsViewProps {
 }
 
 export default function MarketAnalyticsView({ stats, gainers, losers }: MarketAnalyticsViewProps) {
+  const router = useRouter()
+
+  const handleRowClick = (symbol: string) => {
+    router.push(`/tokens/${symbol.toLowerCase()}`)
+  }
+
   const formatNumber = (num: number | undefined) => {
     if (!num || num === 0) return 'N/A'
     if (num >= 1e12) return `$${(num / 1e12).toFixed(2)}T`
@@ -89,10 +96,14 @@ export default function MarketAnalyticsView({ stats, gainers, losers }: MarketAn
                 </thead>
                 <tbody>
                   {gainers.map((token, index) => (
-                    <tr key={token.id} className="border-b border-gray-700 hover:bg-gray-750">
+                    <tr 
+                      key={token.id} 
+                      onClick={() => handleRowClick(token.symbol)}
+                      className="border-b border-gray-700 hover:bg-gray-750 cursor-pointer transition-colors"
+                    >
                       <td className="px-6 py-4 text-gray-500">{index + 1}</td>
                       <td className="px-6 py-4">
-                        <Link href={`/tokens/${token.symbol.toLowerCase()}`} className="flex items-center space-x-3">
+                        <div className="flex items-center space-x-3">
                           {token.image && (
                             <Image src={token.image} alt={token.name} width={32} height={32} className="rounded-full" />
                           )}
@@ -100,13 +111,16 @@ export default function MarketAnalyticsView({ stats, gainers, losers }: MarketAn
                             <div className="font-semibold text-white">{token.name}</div>
                             <div className="text-sm text-gray-400">{token.symbol}</div>
                           </div>
-                        </Link>
+                        </div>
                       </td>
                       <td className="px-6 py-4 text-right text-white">
                         ${token.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 8 })}
                       </td>
                       <td className={`px-6 py-4 text-right font-semibold ${getPriceChangeColor(token.priceChange24h)}`}>
-                        {getPriceChangeIcon(token.priceChange24h)} {Math.abs(token.priceChange24h).toFixed(2)}%
+                        <span className="inline-flex items-center justify-end gap-1 tabular-nums">
+                          <span>{getPriceChangeIcon(token.priceChange24h)}</span>
+                          <span className="font-mono">{Math.abs(token.priceChange24h).toFixed(2)}%</span>
+                        </span>
                       </td>
                       <td className="px-6 py-4 text-right text-gray-300">{formatMarketCap(token.marketCap)}</td>
                     </tr>
@@ -134,10 +148,14 @@ export default function MarketAnalyticsView({ stats, gainers, losers }: MarketAn
                 </thead>
                 <tbody>
                   {losers.map((token, index) => (
-                    <tr key={token.id} className="border-b border-gray-700 hover:bg-gray-750">
+                    <tr 
+                      key={token.id} 
+                      onClick={() => handleRowClick(token.symbol)}
+                      className="border-b border-gray-700 hover:bg-gray-750 cursor-pointer transition-colors"
+                    >
                       <td className="px-6 py-4 text-gray-500">{index + 1}</td>
                       <td className="px-6 py-4">
-                        <Link href={`/tokens/${token.symbol.toLowerCase()}`} className="flex items-center space-x-3">
+                        <div className="flex items-center space-x-3">
                           {token.image && (
                             <Image src={token.image} alt={token.name} width={32} height={32} className="rounded-full" />
                           )}
@@ -145,13 +163,16 @@ export default function MarketAnalyticsView({ stats, gainers, losers }: MarketAn
                             <div className="font-semibold text-white">{token.name}</div>
                             <div className="text-sm text-gray-400">{token.symbol}</div>
                           </div>
-                        </Link>
+                        </div>
                       </td>
                       <td className="px-6 py-4 text-right text-white">
                         ${token.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 8 })}
                       </td>
                       <td className={`px-6 py-4 text-right font-semibold ${getPriceChangeColor(token.priceChange24h)}`}>
-                        {getPriceChangeIcon(token.priceChange24h)} {Math.abs(token.priceChange24h).toFixed(2)}%
+                        <span className="inline-flex items-center justify-end gap-1 tabular-nums">
+                          <span>{getPriceChangeIcon(token.priceChange24h)}</span>
+                          <span className="font-mono">{Math.abs(token.priceChange24h).toFixed(2)}%</span>
+                        </span>
                       </td>
                       <td className="px-6 py-4 text-right text-gray-300">{formatMarketCap(token.marketCap)}</td>
                     </tr>

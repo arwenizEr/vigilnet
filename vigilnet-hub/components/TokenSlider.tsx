@@ -79,7 +79,7 @@ export default function TokenSlider({ tokens }: TokenSliderProps) {
       {canScrollLeft && (
         <button
           onClick={() => scroll('left')}
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-gray-800/90 hover:bg-gray-700 rounded-full p-2 shadow-lg border border-gray-700 transition-all"
+          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-gray-800/90 hover:bg-gray-700 rounded-full p-2 sm:p-2 shadow-lg border border-gray-700 transition-all touch-manipulation"
           aria-label="Scroll left"
         >
           <svg
@@ -101,17 +101,18 @@ export default function TokenSlider({ tokens }: TokenSliderProps) {
       {/* Scrollable Container */}
       <div
         ref={scrollContainerRef}
-        className="flex gap-4 overflow-x-auto scrollbar-hide pb-4 scroll-smooth"
+        className="flex gap-4 overflow-x-auto scrollbar-hide pb-4 scroll-smooth touch-pan-x"
         style={{
           scrollbarWidth: 'none',
           msOverflowStyle: 'none',
+          WebkitOverflowScrolling: 'touch',
         }}
       >
         {tokens.map((token) => (
           <Link
             key={token.id}
             href={`/tokens/${token.symbol.toLowerCase()}`}
-            className="flex-shrink-0 w-64 bg-gray-800 rounded-lg p-4 border border-gray-700 hover:border-gray-600 transition-all hover:shadow-lg cursor-pointer block"
+            className="flex-shrink-0 w-56 sm:w-64 bg-gray-800 rounded-lg p-3 sm:p-4 border border-gray-700 hover:border-gray-600 transition-all hover:shadow-lg cursor-pointer block touch-manipulation"
           >
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center space-x-3">
@@ -181,7 +182,7 @@ export default function TokenSlider({ tokens }: TokenSliderProps) {
       {canScrollRight && (
         <button
           onClick={() => scroll('right')}
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-gray-800/90 hover:bg-gray-700 rounded-full p-2 shadow-lg border border-gray-700 transition-all"
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-gray-800/90 hover:bg-gray-700 rounded-full p-2 sm:p-2 shadow-lg border border-gray-700 transition-all touch-manipulation"
           aria-label="Scroll right"
         >
           <svg

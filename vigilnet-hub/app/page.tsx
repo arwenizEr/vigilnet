@@ -187,8 +187,11 @@ export default async function HomePage() {
                           </div>
                         </div>
                         <div className="text-right">
-                          <div className="text-sm font-semibold text-green-400">
-                            +{token.priceChange24h.toFixed(2)}%
+                          <div className="text-sm font-semibold text-green-400 tabular-nums">
+                            <span className="inline-flex items-center gap-1">
+                              <span>↑</span>
+                              <span className="font-mono">{token.priceChange24h.toFixed(2)}%</span>
+                            </span>
                           </div>
                           <div className="text-xs text-gray-400">
                             ${token.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 6 })}
@@ -240,8 +243,11 @@ export default async function HomePage() {
                           </div>
                         </div>
                         <div className="text-right">
-                          <div className="text-sm font-semibold text-red-400">
-                            {token.priceChange24h.toFixed(2)}%
+                          <div className="text-sm font-semibold text-red-400 tabular-nums">
+                            <span className="inline-flex items-center gap-1">
+                              <span>↓</span>
+                              <span className="font-mono">{Math.abs(token.priceChange24h).toFixed(2)}%</span>
+                            </span>
                           </div>
                           <div className="text-xs text-gray-400">
                             ${token.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 6 })}
